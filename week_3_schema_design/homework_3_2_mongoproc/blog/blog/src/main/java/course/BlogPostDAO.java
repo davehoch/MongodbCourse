@@ -96,5 +96,12 @@ public class BlogPostDAO {
         // - email is optional and may come in NULL. Check for that.
         // - best solution uses an update command to the database and a suitable
         //   operator to append the comment on to any existing list of comments
+		Document comment = new Document("body", body);
+		if (name != null)
+			comment.append("author", name);
+		if (email != null)
+			comment.append("email", email);
+
+		postsCollection.updateOne(Filters.eq("permalink", permalink), new Document("$push", new Document("comments", comment)));
     }
 }
