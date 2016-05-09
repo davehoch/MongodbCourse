@@ -13,6 +13,55 @@ import org.bson.types.ObjectId;
 public class HW22 {
 
 	public static void main(String[] args) {
+		// do1();
+		do31();
+	}
+
+	public static void do31() {
+		try (MongoClient client = new MongoClient()) {
+			MongoDatabase database = client.getDatabase("school");
+			MongoCollection<Document> collection = database.getCollection("students");
+
+			List<Document> results
+					= collection.find()
+					.into(new ArrayList<Document>());
+
+			for (Document doc : results) {
+				List<Document> scores = (List<Document>) doc.get("scores");
+				Long lowestScore = null;
+				for (Document score : scores) {
+					if (score.getString("type").equals("homework")) {
+						Long grade = score.getLong("score");
+						if (lowestScore == null || grade < lowestScore) {
+							lowestScore = grade;
+						}
+					}
+				}
+
+				Document newScores = new Document();
+				for (Document score : scores) {
+
+				}
+
+			}
+
+			//14, 21, 60
+			// 50906d7fa3c412bb040eb579
+			// 50906d7fa3c412bb040eb57d
+			// 50906d7fa3c412bb040eb581
+//			Integer lastStudentId = -1;
+//			for (Document result : results) {
+//				Integer studentId = result.getInteger("student_id");
+//				if (!studentId.equals(lastStudentId)) {
+//					ObjectId rowId = result.getObjectId("_id");
+//					collection.deleteOne(Filters.eq("_id", rowId));
+//					lastStudentId = studentId;
+//				}
+//			}
+		}
+	}
+
+	public static void do1() {
 		try (MongoClient client = new MongoClient()) {
 			MongoDatabase database = client.getDatabase("students");
 			MongoCollection<Document> collection = database.getCollection("grades");
