@@ -24,23 +24,43 @@ public class HW22 {
 
 			List<Document> results
 					= collection.find()
+					.sort(Sorts.orderBy(Sorts.ascending("_id")))
 					.into(new ArrayList<Document>());
 
 			for (Document doc : results) {
+				Object id = doc.get("_id");
 				List<Document> scores = (List<Document>) doc.get("scores");
-				Long lowestScore = null;
+				Double lowestScore = null;
+				int indexOfLowest = -1;
+				int index = 0;
 				for (Document score : scores) {
 					if (score.getString("type").equals("homework")) {
-						Long grade = score.getLong("score");
+						Double grade = score.getDouble("score");
 						if (lowestScore == null || grade < lowestScore) {
 							lowestScore = grade;
+							indexOfLowest = index;
 						}
 					}
+					index++;
 				}
+				if (indexOfLowest != -1) {
+					System.out.println(scores.get(indexOfLowest));
+					scores.remove(indexOfLowest);
+//					collection.updateOne(Filters.eq("_id", id), doc);
+					collection.findOneAndReplace(Filters.eq("_id", id), doc);
+				}
+				//collection.updateOne(doc, doc)
 
-				Document newScores = new Document();
-				for (Document score : scores) {
-
+//				Document newScores = new Document().;
+//				for (Document score : scores) {
+//					if (score.getString("type").equals("homework")) {
+//						Long grade = score.getLong("score");
+//						if (lowestScore == null || grade < lowestScore) {
+//							lowestScore = grade;
+//						}
+//					}
+//					else
+//						newScores.append(key, score)
 				}
 
 			}
@@ -58,7 +78,6 @@ public class HW22 {
 //					lastStudentId = studentId;
 //				}
 //			}
-		}
 	}
 
 	public static void do1() {
